@@ -155,6 +155,39 @@ function viewEmployees() {
     })
 }
 
-// function updateEmployee() {
+function updateEmployee() {
+    inquirer.prompt([{
+        name: "id",
+        type: "input",
+        message: "What is id of the employee you wish to update?"
+    },
+    {
+        name: "first",
+        type: "input",
+        message: "What is the new employee's first name?"
+    },
+    {
+        name: "last",
+        type: "input",
+        message: "What is the new employee's last name?"
+    }, {
+        name: "role_id",
+        type: "input",
+        message: "What is the id of the employee's role"
+    }, {
+        name: "manager_id",
+        type: "input",
+        message: "What is the id of the employee's manager"
+    }]).then(function (answer) {
+        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?";
+        connection.query(query, [answer.first, answer.last, answer.role_id, answer.manager_id, parseInt(answer.id)], function (err, res) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log("Successfully updated the employees information");
+            }
+            start();
+        });
+    });
 
-// }
+}
