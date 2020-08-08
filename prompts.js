@@ -45,7 +45,7 @@ function start() {
                     addDepartment();
                     break;
                 case "Add a Role":
-                    addRole();
+                    departmentList(addRole);
                     break;
                 case "Add an Employee":
                     addEmployee();
@@ -82,7 +82,9 @@ function addDepartment() {
     });
 }
 
-function addRole() {
+function addRole(departments) {
+    var department_name_list = departments.map(el => el.name)
+
     inquirer.prompt([{
         name: "title",
         type: "input",
@@ -93,17 +95,27 @@ function addRole() {
         type: "input",
         message: "What is the new role's salary?"
     }, {
-        name: "department_id",
-        type: "input",
-        message: "What is the id of the Role's department?"
+        name: "department",
+        type: "list",
+        message: "What department is the new role in?",
+        choices: department_name_list
     }]).then(function (answer) {
-        ;
+        var department = departments.filter(el => el.name === answer.department); // use answer.department to find the id
         var query = `INSERT INTO role SET ?`;
-        connection.query(query, { title: answer.title, salary: answer.salary, department_id: answer.department_id }, function (err, res) {
+        connection.query(query, { title: answer.title, salary: answer.salary, department_id: department.id }, function (err, res) {
             start();
         });
     });
 }
+
+function departmentList(cb) {
+    var query = "SELECT * from department";
+    connection.query(query, function (err, res) {
+        cb(res);
+    });
+}
+
+
 
 function addEmployee() {
     inquirer.prompt([{
