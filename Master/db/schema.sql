@@ -1,5 +1,7 @@
+DROP DATABASE IF EXISTS employeesDB;
 CREATE DATABASE employeesDB;
 USE employeesDB;
+
 CREATE TABLE employee(
     id int primary key auto_increment,
     first_name varchar
@@ -7,7 +9,7 @@ CREATE TABLE employee(
     last_name varchar
 (30) not null,
     role_id int not null, 
-    manager_id int not null,
+    manager_id int
 );
 
 CREATE TABLE role(
