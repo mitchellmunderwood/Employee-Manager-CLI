@@ -26,3 +26,7 @@ CREATE TABLE department(
     name varchar
 (30)
 );
+
+Select * from employee WHERE NOT manager_id = null;
+
+

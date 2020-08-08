@@ -24,6 +24,8 @@ connection.connect(function (err) {
     start();
 });
 
+
+
 function start() {
     inquirer.prompt({
         name: "action",
@@ -83,7 +85,7 @@ function addDepartment() {
 }
 
 function addRole(departments) {
-    var department_name_list = departments.map(el => el.name)
+    var departmentList = departments.map(el => el.name)
 
     inquirer.prompt([{
         name: "title",
@@ -98,14 +100,185 @@ function addRole(departments) {
         name: "department",
         type: "list",
         message: "What department is the new role in?",
-        choices: department_name_list
+        choices: departmentList
     }]).then(function (answer) {
-        var department = departments.filter(el => el.name === answer.department); // use answer.department to find the id
+        var department = departments.filter(el => el.name === answer.department)[0]; // use answer.department to find the id
         var query = `INSERT INTO role SET ?`;
         connection.query(query, { title: answer.title, salary: answer.salary, department_id: department.id }, function (err, res) {
             start();
         });
     });
+}
+
+function addEmployee() {
+    var query = "SELECT * from role";
+    connection.query(query, function (err, res1) {
+        var roles = res1;
+        var roleList = roles.map(el => el.title);
+
+        var query = "Select id, first_name, last_name from employee Where manager_id in (Select manager_id from employee WHERE manager_id is not null GROUP by manager_id)"
+        connection.query(query, function (err, res2) {
+            var managers = res2;
+            var managerList = managers.map(el => el.first_name);
+            managerList.push("");
+
+            inquirer.prompt([{
+                name: "first",
+                type: "input",
+                message: "What is the new employee's first name?"
+            },
+            {
+                name: "last",
+                type: "input",
+                message: "What is the new employee's last name?"
+            }, {
+                name: "title",
+                type: "list",
+                message: "What is the Employee's role?",
+                choices: roleList
+            }, {
+                name: "first_name",
+                type: "list",
+                message: "Who is the Employee's manager?",
+                choices: managerList
+            }]).then(function (answer) {
+                var role = roles.filter(el => el.title === answer.title)[0];
+                var manager = managers.filter(el => el.first_name === answer.first_name)[0]
+
+                if (manager) {
+
+                    var query = `INSERT INTO employee SET ?`;
+                    connection.query(query, { first_name: answer.first, last_name: answer.last, role_id: role.id, manager_id: manager.id }, function (err, res) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        start();
+
+                    });
+                } else {
+                    var query = `INSERT INTO employee SET ?`;
+                    connection.query(query, { first_name: answer.first, last_name: answer.last, role_id: role.id }, function (err, res) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("Successfully Added employee information!");
+                        }
+                        start();
+
+                    });
+
+                }
+
+
+
+
+            });
+
+        })
+    });
+
+
+
+}
+
+function updateEmployee() {
+    var query = "SELECT * from role";
+    connection.query(query, function (err, res1) {
+        var roles = res1;
+        var roleList = roles.map(el => el.title);
+
+        var query = "Select id, first_name, last_name from employee Where manager_id in (Select manager_id from employee GROUP by manager_id)"
+        connection.query(query, function (err, res2) {
+            var managers = res2;
+            var managerList = managers.map(el => el.first_name);
+            managerList.push("");
+
+            var query = "Select id, first_name, last_name from employee";
+            connection.query(query, function (err, res3) {
+                var employees = res3;
+                var employeeNames = employees.map(el => el.first_name + " " + el.last_name);
+
+                inquirer.prompt([{
+                    name: "employee_name",
+                    type: "list",
+                    message: "Which employee would you like to update?",
+                    choices: employeeNames
+                },
+                {
+                    name: "first",
+                    type: "input",
+                    message: "What is the new employee's first name?"
+                },
+                {
+                    name: "last",
+                    type: "input",
+                    message: "What is the new employee's last name?"
+                }, {
+                    name: "title",
+                    type: "list",
+                    message: "What is the Employee's role?",
+                    choices: roleList
+                }, {
+                    name: "first_name",
+                    type: "list",
+                    message: "Who is the Employee's manager?",
+                    choices: managerList,
+
+                }]).then(function (answer) {
+
+                    var role = roles.filter(el => el.title === answer.title)[0];
+                    var manager = managers.filter(el => el.first_name === answer.first_name)[0]
+                    var name = answer.employee_name.split(" ");
+                    var employee = employees.filter(el => el.first_name === name[0]);
+
+                    if (manager) {
+
+                        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?";
+
+                        var params = [answer.first, answer.last, role.id, manager.id || null, employee[0].id];
+                        console.log(params);
+
+                        connection.query(query, params, function (err, res) {
+                            if (err) {
+                                console.log(err);
+
+                            } else {
+                                console.log("Successfully updated the employees information");
+                            }
+
+                        });
+                    } else {
+                        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ? WHERE id = ?";
+
+                        var params = [answer.first, answer.last, role.id, employee[0].id];
+                        console.log(params);
+
+                        connection.query(query, params, function (err, res) {
+                            if (err) {
+                                console.log(err);
+
+                            } else {
+                                console.log("Successfully updated the employees information");
+                            }
+
+                        });
+                    }
+                    start();
+                });
+
+
+            });
+
+
+
+
+
+        });
+
+
+    });
+
+
 }
 
 function departmentList(cb) {
@@ -117,31 +290,7 @@ function departmentList(cb) {
 
 
 
-function addEmployee() {
-    inquirer.prompt([{
-        name: "first",
-        type: "input",
-        message: "What is the new employee's first name?"
-    },
-    {
-        name: "last",
-        type: "input",
-        message: "What is the new employee's last name?"
-    }, {
-        name: "role_id",
-        type: "input",
-        message: "What is the id of the employee's role"
-    }, {
-        name: "manager_id",
-        type: "input",
-        message: "What is the id of the employee's manager"
-    }]).then(function (answer) {
-        var query = `INSERT INTO employee SET ?`;
-        connection.query(query, { first_name: answer.first, last_name: answer.last, role_id: answer.role_id, manager_id: answer.manager_id }, function (err, res) {
-            start();
-        });
-    });
-}
+
 
 function viewDepartments() {
     var query = "SELECT * FROM department";
@@ -165,41 +314,4 @@ function viewEmployees() {
         console.log(res);
         start();
     })
-}
-
-function updateEmployee() {
-    inquirer.prompt([{
-        name: "id",
-        type: "input",
-        message: "What is id of the employee you wish to update?"
-    },
-    {
-        name: "first",
-        type: "input",
-        message: "What is the new employee's first name?"
-    },
-    {
-        name: "last",
-        type: "input",
-        message: "What is the new employee's last name?"
-    }, {
-        name: "role_id",
-        type: "input",
-        message: "What is the id of the employee's role"
-    }, {
-        name: "manager_id",
-        type: "input",
-        message: "What is the id of the employee's manager"
-    }]).then(function (answer) {
-        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?";
-        connection.query(query, [answer.first, answer.last, answer.role_id, answer.manager_id, parseInt(answer.id)], function (err, res) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("Successfully updated the employees information");
-            }
-            start();
-        });
-    });
-
 }
