@@ -20,8 +20,8 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-    console.log(getAllDepartments());
-    // start();
+
+    start();
 });
 
 function start() {
@@ -33,9 +33,9 @@ function start() {
             "Add a Department",
             "Add a Role",
             "Add an Employee",
-            "View a Department",
-            "View a Role",
-            "View an Employee",
+            "View all Departments",
+            "View all Roles",
+            "View all Employees",
             "Update an Employee"
         ]
     })
@@ -50,14 +50,14 @@ function start() {
                 case "Add an Employee":
                     addEmployee();
                     break;
-                case "View a Department":
-                    viewDepartment();
+                case "View all Departments":
+                    viewDepartments();
                     break;
-                case "View a Role":
-                    viewRole();
+                case "View all Roles":
+                    viewRoles();
                     break;
-                case "View an Employee":
-                    viewEmployee();
+                case "View all Employees":
+                    viewEmployees();
                     break;
                 case "Update an Employee":
                     updateEmployee();
@@ -92,57 +92,48 @@ function addRole() {
         name: "salary",
         type: "input",
         message: "What is the new role's salary?"
+    }, {
+        name: "department_id",
+        type: "input",
+        message: "What is the id of the Role's department?"
     }]).then(function (answer) {
-        var department_id = pickDepartment();
+        ;
         var query = `INSERT INTO role SET ?`;
-        connection.query(query, { title: answer.title, salary: answer.salary, department_id: "1" }, function (err, res) {
+        connection.query(query, { title: answer.title, salary: answer.salary, department_id: answer.department_id }, function (err, res) {
             start();
         });
     });
 }
 
-function pickDepartment() {
-    inquirer.prompt([{
-        name: "name",
-        type: "list",
-        message: "which department do you wish to designate?",
-        choices: getAllDepartments()
-    }]).then(function (answer) {
-        var query = "Select id FROM department WHERE name = ?"
-        connection.query(query, answer.name, function (err, res) {
-            return res[0];
-        })
-    })
-}
 
-function getAllDepartments() {
-    var query = "SELECT name FROM department"
-    let results;
-    connection.query(query, [], function (err, res) {
-        // return res.map(el => el.name);
-        return res.map(el => el.name);
-    });
-
-}
 
 // function addEmployees() {
 
 // }
 
-// function viewDepartments() {
-//     var query = "SELECT * from departments";
-//     connection.query(query, function (err, res) {
-//         console.log(res);
-//     })
-// }
+function viewDepartments() {
+    var query = "SELECT * FROM department";
+    connection.query(query, function (err, res) {
+        console.log(res);
+        start();
+    })
+}
 
-// function viewRoles() {
+function viewRoles() {
+    var query = "SELECT * FROM role";
+    connection.query(query, function (err, res) {
+        console.log(res);
+        start();
+    })
+}
 
-// }
-
-// function viewEmployees() {
-
-// }
+function viewEmployees() {
+    var query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) {
+        console.log(res);
+        start();
+    })
+}
 
 // function updateEmployee() {
 
