@@ -105,11 +105,31 @@ function addRole() {
     });
 }
 
-
-
-// function addEmployees() {
-
-// }
+function addEmployee() {
+    inquirer.prompt([{
+        name: "first",
+        type: "input",
+        message: "What is the new employee's first name?"
+    },
+    {
+        name: "last",
+        type: "input",
+        message: "What is the new employee's last name?"
+    }, {
+        name: "role_id",
+        type: "input",
+        message: "What is the id of the employee's role"
+    }, {
+        name: "manager_id",
+        type: "input",
+        message: "What is the id of the employee's manager"
+    }]).then(function (answer) {
+        var query = `INSERT INTO employee SET ?`;
+        connection.query(query, { first_name: answer.first, last_name: answer.last, role_id: answer.role_id, manager_id: answer.manager_id }, function (err, res) {
+            start();
+        });
+    });
+}
 
 function viewDepartments() {
     var query = "SELECT * FROM department";
