@@ -21,7 +21,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-
+    renderOpen();
     start();
 });
 
@@ -188,99 +188,44 @@ function updateEmployee() {
         var roles = res1;
         var roleList = roles.map(el => el.title);
 
-        var query = "Select id, first_name, last_name from employee Where manager_id in (Select manager_id from employee GROUP by manager_id)"
-        connection.query(query, function (err, res2) {
-            var managers = res2;
-            var managerList = managers.map(el => el.first_name);
-            managerList.push("");
+        var query = "Select id, first_name, last_name from employee";
+        connection.query(query, function (err, res3) {
+            var employees = res3;
+            var employeeNames = employees.map(el => el.first_name + " " + el.last_name);
 
-            var query = "Select id, first_name, last_name from employee";
-            connection.query(query, function (err, res3) {
-                var employees = res3;
-                var employeeNames = employees.map(el => el.first_name + " " + el.last_name);
+            inquirer.prompt([{
+                name: "employee_name",
+                type: "list",
+                message: "Which employee would you like to update?",
+                choices: employeeNames
+            },
+            {
+                name: "title",
+                type: "list",
+                message: "What is the Employee's role?",
+                choices: roleList
+            }]).then(function (answer) {
 
-                inquirer.prompt([{
-                    name: "employee_name",
-                    type: "list",
-                    message: "Which employee would you like to update?",
-                    choices: employeeNames
-                },
-                {
-                    name: "first",
-                    type: "input",
-                    message: "What is the new employee's first name?"
-                },
-                {
-                    name: "last",
-                    type: "input",
-                    message: "What is the new employee's last name?"
-                }, {
-                    name: "title",
-                    type: "list",
-                    message: "What is the Employee's role?",
-                    choices: roleList
-                }, {
-                    name: "first_name",
-                    type: "list",
-                    message: "Who is the Employee's manager?",
-                    choices: managerList,
 
-                }]).then(function (answer) {
-
-                    var role = roles.filter(el => el.title === answer.title)[0];
-                    var manager = managers.filter(el => el.first_name === answer.first_name)[0]
-                    var name = answer.employee_name.split(" ");
-                    var employee = employees.filter(el => el.first_name === name[0]);
-
-                    if (manager) {
-
-                        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?";
-
-                        var params = [answer.first, answer.last, role.id, manager.id || null, employee[0].id];
-                        console.log(params);
-
-                        connection.query(query, params, function (err, res) {
-                            if (err) {
-                                console.log(err);
-
-                            } else {
-                                console.log("Successfully updated the employees information");
-                            }
-
-                        });
+                var role = roles.filter(el => el.title === answer.title)[0];
+                var name = answer.employee_name.split(" ");
+                var employee = employees.filter(el => el.first_name === name[0])[0];
+                // console.log([role.id, employee.id]);
+                var query = "UPDATE employee SET role_id = ? WHERE id = ?";
+                connection.query(query, [role.id, employee.id], function (err, res) {
+                    if (err) {
+                        console.log(err);
                     } else {
-                        var query = "UPDATE employee SET first_name = ?, last_name = ?, role_id = ? WHERE id = ?";
-
-                        var params = [answer.first, answer.last, role.id, employee[0].id];
-                        console.log(params);
-
-                        connection.query(query, params, function (err, res) {
-                            if (err) {
-                                console.log(err);
-
-                            } else {
-                                console.log("Successfully updated the employees information");
-                            }
-
-                        });
+                        console.log("Successfully updated the employees information");
                     }
-                    start();
                 });
-
-
+                start();
             });
-
-
-
-
-
         });
-
-
     });
-
-
 }
+
+
 
 function departmentList(cb) {
     var query = "SELECT * from department";
@@ -294,7 +239,7 @@ function departmentList(cb) {
 
 
 function viewDepartments() {
-    var query = "SELECT * FROM department";
+    var query = "SELECT id as ID, name as Department FROM department";
     connection.query(query, function (err, res) {
         // console.log(res);
         console.table(res);
@@ -303,7 +248,7 @@ function viewDepartments() {
 }
 
 function viewRoles() {
-    var query = "SELECT * FROM role";
+    var query = "SELECT role.id as ID, role.title as Title, role.salary as Salary, department.name as Department FROM role LEFT JOIN department ON role.department_id = department.id";
     connection.query(query, function (err, res) {
         console.table(res);
         start();
@@ -311,9 +256,22 @@ function viewRoles() {
 }
 
 function viewEmployees() {
-    var query = "SELECT * FROM employee";
+    var query = "SELECT employee.id as ID, employee.first_name as 'First Name', employee.last_name as 'Last Name', role.title as Role, role.salary as Salary, department.name as Department FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id";
     connection.query(query, function (err, res) {
+
         console.table(res);
         start();
     })
+}
+
+
+function renderOpen() {
+    var block = [
+        "--------------------",
+        "     EMPLOYEE       ",
+        "     MANAGER        ",
+        "--------------------"]
+    block.forEach(el => {
+        console.log(el + "\n");
+    });
 }
