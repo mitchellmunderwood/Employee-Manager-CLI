@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var ctable = require("console.table");
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -295,7 +296,8 @@ function departmentList(cb) {
 function viewDepartments() {
     var query = "SELECT * FROM department";
     connection.query(query, function (err, res) {
-        console.log(res);
+        // console.log(res);
+        console.table(res);
         start();
     })
 }
@@ -303,7 +305,7 @@ function viewDepartments() {
 function viewRoles() {
     var query = "SELECT * FROM role";
     connection.query(query, function (err, res) {
-        console.log(res);
+        console.table(res);
         start();
     })
 }
@@ -311,7 +313,7 @@ function viewRoles() {
 function viewEmployees() {
     var query = "SELECT * FROM employee";
     connection.query(query, function (err, res) {
-        console.log(res);
+        console.table(res);
         start();
     })
 }
