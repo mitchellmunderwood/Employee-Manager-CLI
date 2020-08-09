@@ -5,7 +5,7 @@
 
 ### Demo
 
-For a link to a video demonstration of the application, click [here](./index.html)
+For a link to a video demonstration of the application, click [here](https://sassypigeon.github.io/Employee_Manager/).
 
 ### Table of Contents 
 - [**Description**](#Description) 
