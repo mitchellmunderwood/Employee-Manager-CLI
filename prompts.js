@@ -225,18 +225,12 @@ function updateEmployee() {
     });
 }
 
-
-
 function departmentList(cb) {
     var query = "SELECT * from department";
     connection.query(query, function (err, res) {
         cb(res);
     });
 }
-
-
-
-
 
 function viewDepartments() {
     var query = "SELECT id as ID, name as Department FROM department";
@@ -252,16 +246,15 @@ function viewRoles() {
     connection.query(query, function (err, res) {
         console.table(res);
         start();
-    })
+    });
 }
 
 function viewEmployees() {
     var query = "SELECT employee.id as ID, employee.first_name as 'First Name', employee.last_name as 'Last Name', role.title as Role, role.salary as Salary, department.name as Department FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id";
     connection.query(query, function (err, res) {
-
         console.table(res);
         start();
-    })
+    });
 }
 
 
