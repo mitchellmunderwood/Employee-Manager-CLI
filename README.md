@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <!-- image/logo link -->
-  <a href="mitchellmunderwood.github.io/Employee-Manager-CLI/"><img src="./README-support/logo.png" alt="title" width="200" height="200" ></a>
+  <a href="https://mitchellmunderwood.github.io/Employee-Manager-CLI/"><img src="./README-support/logo.png" alt="title" width="200" height="200" ></a>
   
   Employee Manager CLI
   <br>
