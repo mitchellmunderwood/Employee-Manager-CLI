@@ -80,7 +80,7 @@ Employee Manager CLI is licensed under the terms of the [MIT License](https://op
          alt="CSS3"> -->
     <img src="https://img.shields.io/badge/Code-JavaScript-informational?style=flat&logo=javascript&logoColor=white&color=blue"
          alt="JavaSript">
-    <img src="https://img.shields.io/badge/Code-NodeJS-informational?style=flat&logo=javascript&logoColor=white&color=blue"
+    <img src="https://img.shields.io/badge/Code-NodeJS-informational?style=flat&logo=nodejs&logoColor=white&color=blue"
          alt="JavaSript">
     <!-- <img src="https://img.shields.io/badge/Code-Handlebars-informational?style=flat&logo=handlebars&logoColor=white&color=blue"
          alt="Express"> -->
