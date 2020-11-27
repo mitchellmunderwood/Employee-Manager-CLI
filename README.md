@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <!-- image/logo link -->
-  <a href=""><img src="./README-support/logo.png" alt="title" width="200" height="200" ></a>
+  <a href="mitchellmunderwood.github.io/Employee-Manager-CLI/"><img src="./README-support/logo.png" alt="title" width="200" height="200" ></a>
   
   Employee Manager CLI
   <br>
@@ -80,6 +80,8 @@ Employee Manager CLI is licensed under the terms of the [MIT License](https://op
          alt="CSS3"> -->
     <img src="https://img.shields.io/badge/Code-JavaScript-informational?style=flat&logo=javascript&logoColor=white&color=blue"
          alt="JavaSript">
+    <img src="https://img.shields.io/badge/Code-NodeJS-informational?style=flat&logo=javascript&logoColor=white&color=blue"
+         alt="JavaSript">
     <!-- <img src="https://img.shields.io/badge/Code-Handlebars-informational?style=flat&logo=handlebars&logoColor=white&color=blue"
          alt="Express"> -->
     <!-- <img src="https://img.shields.io/badge/Code-Express-informational?style=flat&logo=express&logoColor=white&color=blue"
@@ -104,7 +106,7 @@ Fork the repo, run `npm install` and then `node prompts.js`.
 
 ### Usage
 
-Usage of the CLI application is demonstrated in a tutorial video. <a href="./docs/index.html">Go to Video</a>.
+Usage of the CLI application is demonstrated in a tutorial video. <a href="mitchellmunderwood.github.io/Employee-Manager-CLI/">Go to Video</a>.
 
 <br/>
 
