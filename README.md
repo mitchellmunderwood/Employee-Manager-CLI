@@ -106,7 +106,7 @@ Fork the repo, run `npm install` and then `node prompts.js`.
 
 ### Usage
 
-Usage of the CLI application is demonstrated in a tutorial video. <a href="mitchellmunderwood.github.io/Employee-Manager-CLI/">Go to Video</a>.
+Usage of the CLI application is demonstrated in a tutorial video. <a href="https://mitchellmunderwood.github.io/Employee-Manager-CLI/">Go to Video</a>.
 
 <br/>
 
